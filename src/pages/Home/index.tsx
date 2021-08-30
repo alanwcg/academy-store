@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { MdAddShoppingCart } from 'react-icons/md';
+import { useCart } from '../../hooks/useCart';
 import { api } from '../../services/api';
 
 import { ProductList } from "./styles";
@@ -11,8 +12,25 @@ interface Product {
   image: string;
 }
 
+interface CartItemsAmount {
+  [key: number]: number;
+}
+
 export function Home() {
+  const { cart, addProduct } = useCart();
+
   const [products, setProducts] = useState<Product[]>([]);
+
+  const cartItemsAmount = cart.reduce((cartItemsAmount, product) => {
+    return {
+      ...cartItemsAmount,
+      [product.id]: product.amount,
+    }
+  }, {} as CartItemsAmount);
+
+  function handleAddProduct(id: number) {
+    addProduct(id);
+  }
 
   useEffect(() => {
     async function loadProducts() {
@@ -38,10 +56,10 @@ export function Home() {
               }).format(product.price)
             }
           </span>
-          <button type="button">
+          <button type="button" onClick={() => handleAddProduct(product.id)}>
             <div>
               <MdAddShoppingCart size={16} color="#FFF" />
-              0
+              {cartItemsAmount[product.id] || 0}
             </div>
 
             <span>ADICIONAR AO CARRINHO</span>

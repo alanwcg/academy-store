@@ -4,8 +4,12 @@ import { MdShoppingBasket } from 'react-icons/md';
 import { Container, Cart } from "./styles";
 
 import logo from '../../assets/images/logo.svg';
+import { useCart } from '../../hooks/useCart';
 
 export function Header() {
+  const { cart } = useCart();
+  const cartSize = cart.length;
+
   return (
     <Container>
       <Link to="/">
@@ -15,7 +19,9 @@ export function Header() {
       <Cart to="/cart">
         <div>
           <strong>Meu carrinho</strong>
-          <span>1 item</span>
+          <span>
+            {cartSize === 1 ? `${cartSize} item` : `${cartSize} itens`}
+          </span>
         </div>
 
         <MdShoppingBasket size={36} color="#FFF" />
